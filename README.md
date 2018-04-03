@@ -1,1 +1,1 @@
-# keras-mixed-scale-dense-net
+# Keras Mixed-Scale Dense Net
