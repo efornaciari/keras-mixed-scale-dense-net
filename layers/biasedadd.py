@@ -31,7 +31,6 @@ class BiasedAdd(Add):
     self.supports_masking = True
 
   def build(self, input_shape):
-    print input_shape
     # Used purely for shape validation.
     if not isinstance(input_shape, list):
         input_shape = [ input_shape ]
@@ -73,7 +72,6 @@ class BiasedAdd(Add):
         self.bias = None
 
   def _merge_function(self, inputs):
-    print inputs
     outputs = super(BiasedAdd, self)._merge_function(inputs)
 
     # Apply Bias
