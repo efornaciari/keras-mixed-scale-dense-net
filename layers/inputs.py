@@ -21,8 +21,10 @@ class InputChannels(Layer):
 
   def compute_output_shape(self, input_shape):
     output_shape = []
-    single_output_shape = input_shape[:-2] + (1,)
+    print input_shape
+    single_output_shape = input_shape[:-1] + (1,)
     
     for input_channel in range(self.input_channels):
       output_shape.append(single_output_shape)
+    print output_shape
     return output_shape
