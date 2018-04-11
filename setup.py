@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name='keras-mixed-scale-dense-net',
-    version='0.0.1',
+    version='0.0.2',
     url='https://github.com/efornaciari/keras-mixed-scale-dense-net',
     author='Eric Fornaciari',
     maintainer='Eric Fornaciari',

@@ -61,8 +61,8 @@ def __build_output_layer(previous_layers, merge_op):
   weighted_feature_maps = []
   for previous_layer in previous_layers:
     weighted_feature_maps.append(Conv2D(1, (1, 1), activation=None, use_bias=False) (previous_layer))
-  # outputs = BiasedAdd(activation='sigmoid', bias_initializer='random_uniform') (weighted_feature_maps)
   outputs = merge_op() (weighted_feature_maps)
+  outputs = Conv2D(1, (1, 1), activation='sigmoid', use_bias=False) (outputs)
   return outputs
 
 def __build_layer(
