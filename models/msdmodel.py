@@ -57,11 +57,12 @@ def __build_input_layer(num_input_channels):
   return inputs, previous_layers
 
 # TODO: softmax?
-def __build_output_layer(previous_layers):
+def __build_output_layer(previous_layers, merge_op):
   weighted_feature_maps = []
   for previous_layer in previous_layers:
     weighted_feature_maps.append(Conv2D(1, (1, 1), activation=None, use_bias=False) (previous_layer))
-  outputs = BiasedAdd(activation='sigmoid', bias_initializer='random_uniform') (weighted_feature_maps)
+  # outputs = BiasedAdd(activation='sigmoid', bias_initializer='random_uniform') (weighted_feature_maps)
+  outputs = merge_op() (weighted_feature_maps)
   return outputs
 
 def __build_layer(
@@ -78,13 +79,14 @@ def __build_layer(
 ):
   current_layers = []
   for j in range(width):
-    current_layers.append(__build_feature_map(filters, kernel_size, conv_block, dilation_rate_fn, use_dropout, dropout, width, depth, i, j, previous_layers))
+    current_layers.append(__build_feature_map(filters, kernel_size, merge_op, conv_block, dilation_rate_fn, use_dropout, dropout, width, depth, i, j, previous_layers))
   previous_layers.extend(current_layers)
   return previous_layers
 
 def __build_feature_map(
   filters,
   kernel_size,
+  merge_op,
   conv_block,
   dilation_rate_fn,
   use_dropout,
@@ -98,7 +100,8 @@ def __build_feature_map(
     dilation_rate = dilation_rate_fn(width,i,j)
     dilated_feature_maps.append(Conv2D(filters, kernel_size, padding='same', dilation_rate=dilation_rate, activation=None, use_bias=False) (previous_layer))
     # feature_map = conv_block(filters=filters, kernel_size=kernel_size, width=width, depth=depth, i=i, j=j) (feature_map)
-  outputs = BiasedAdd(activation='relu', bias_initializer='random_uniform') (dilated_feature_maps)
+  # outputs = BiasedAdd(activation='relu', bias_initializer='random_uniform') (dilated_feature_maps)
+  outputs = merge_op() (dilated_feature_maps)
   # Dropout if applicable
   if use_dropout:
       outputs = Dropout(dropout) (outputs)
@@ -156,7 +159,7 @@ def __build_model(
   num_current_layers = num_current_layers + 1
   if verbose:
     status_logger("Adding Output Layer", num_current_layers, num_total_layers)
-  outputs = __build_output_layer(previous_layers)
+  outputs = __build_output_layer(previous_layers, merge_op)
   if verbose:
     status_logger("Done!", num_total_layers, num_total_layers)
   return inputs, outputs
