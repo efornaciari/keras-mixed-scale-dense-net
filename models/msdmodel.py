@@ -1,25 +1,28 @@
 import sys
 
 from keras.models import Model
-from keras.layers import Input, Concatenate
-from keras.layers.core import Dropout, Lambda
+from keras.layers import Input
+from keras.layers.core import Dropout
 from keras.layers.convolutional import Conv2D
-from keras.layers.merge import Add
+
 from layers.biasedadd import BiasedAdd
 from layers.inputs import InputChannels
+
 from keras import backend as K
 
 def msdnet(
   num_input_channels,
-  shape,
-  num_classes,
+  network_shape,
+  num_output_classes,
   use_dropout=False,
+  intermediate_activation="relu",
+  output_activation="softmax",
   dropout=0.2,
   filters=1,
   kernel_size=(3,3),
   dilation_rate_fn=None,
-  name='msdnet',
-  verbose=False
+  verbose=False,
+  **kwargs
 ):
   """ Construct a Mixed-Scale Dense Net
 
@@ -28,10 +31,9 @@ def msdnet(
     num_classes       : 
     conv_block        : 
     dilation_rate_fn  : 
-    name              : 
   """
 
-  width, depth = shape
+  width, depth = network_shape
 
   if dilation_rate_fn is None:
     def __dilation_rate_fn(width, i, j):
@@ -40,7 +42,7 @@ def msdnet(
 
   inputs, outputs = __build_model(
     num_input_channels,
-    num_classes,
+    num_output_classes,
     filters,
     kernel_size,
     dilation_rate_fn,
