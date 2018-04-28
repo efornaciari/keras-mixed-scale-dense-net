@@ -1,5 +1,5 @@
 from keras import backend as K
-from keras.layers.merge import Add, Concatenate
+from keras.layers.merge import Add
 
 from keras import activations
 from keras import initializers
