@@ -32,7 +32,7 @@ class InputChannels(Layer):
     Returns:
       List of num_input_channels Tensors.
     """
-  	return [ K.expand_dims(tensor, axis=-1) for tensor in tf.unstack(x, num=self.num_input_channels, axis=-1) ]
+    return [ K.expand_dims(tensor, axis=-1) for tensor in tf.unstack(x, num=self.num_input_channels, axis=-1) ]
 
   def compute_output_shape(self, input_shape):
     """
